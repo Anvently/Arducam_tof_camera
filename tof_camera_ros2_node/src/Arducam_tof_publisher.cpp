@@ -90,7 +90,7 @@ void ArducamTofPublisher::initializeParameters()
 	RCLCPP_INFO(this->get_logger(), "  jpeg_quality: %d", jpeg_quality_);
 	RCLCPP_INFO(this->get_logger(), "  topic_name: %s", topic_name_.c_str());
 	RCLCPP_INFO(this->get_logger(), "  frame_id: %s", frame_id_.c_str());
-}#include "arducam_tof_publisher.hpp"
+}
 
 ArducamTofPublisher::ArducamTofPublisher() 
 : Node("arducam_tof_publisher"),
