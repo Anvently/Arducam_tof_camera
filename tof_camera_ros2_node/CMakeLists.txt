@@ -13,17 +13,24 @@ find_package(ament_cmake REQUIRED)
 
 find_package(ArducamDepthCamera REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(sensor_msgs REQUIRED)
 
 set(CLIBS ArducamDepthCamera::ArducamDepthCamera4C)
 set(CXXLIBS ArducamDepthCamera::ArducamDepthCamera)
 
-add_executable(tof_camera_node src/tof_camera_node.cpp)
+include_directories(include)
+add_executable(tof_camera_node src/Arducam_tof_publisher.cpp)
 target_include_directories(tof_camera_node PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
 target_compile_features(tof_camera_node PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
 target_link_libraries(tof_camera_node ${CXXLIBS} ${OpenCV_LIBS})
+
+ament_target_dependencies(tof_camera_node
+  rclcpp
+  sensor_msgs
+)
 
 install(TARGETS tof_camera_node
   DESTINATION lib/${PROJECT_NAME})
