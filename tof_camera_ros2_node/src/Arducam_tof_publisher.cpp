@@ -232,7 +232,7 @@ void ArducamTofPublisher::cleanup()
 	
 	// Remove parameter callback
 	if (params_callback_handle_) {
-		this->remove_on_set_parameters_callback(params_callback_handle_);
+		this->remove_on_set_parameters_callback(static_cast<OnSetParametersCallbackHandle::SharedPtr>(params_callback_handle_));
 		params_callback_handle_.reset();
 	}
 }
