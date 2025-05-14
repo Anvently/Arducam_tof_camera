@@ -61,8 +61,8 @@ void ArducamTofPublisher::initializeParameters()
 						range_max_ = value;
 						if (camera_initialized_) {
 							tof_camera_.setControl(Arducam::Control::RANGE, range_max_);
-							tof_camera_.getControl(Arducam::Control::RANGE, &max_range_);
-							RCLCPP_INFO(this->get_logger(), "Updated range_max to %d", max_range_);
+							tof_camera_.getControl(Arducam::Control::RANGE, &range_max_);
+							RCLCPP_INFO(this->get_logger(), "Updated range_max to %d", range_max_);
 						}
 					}
 				} else if (param.get_name() == "jpeg_quality") {
@@ -94,15 +94,14 @@ void ArducamTofPublisher::initializeParameters()
 
 ArducamTofPublisher::ArducamTofPublisher() 
 : Node("arducam_tof_publisher"),
-camera_initialized_(false),
-max_range_(4000),
-frame_count_(0),
-time_begin_(std::chrono::high_resolution_clock::now()),
 publish_rate_ms_(30),
 range_max_(4000),
 jpeg_quality_(95),
 topic_name_("arducam_tof/image/compressed"),
-frame_id_("arducam_tof_frame")
+frame_id_("arducam_tof_frame"),
+camera_initialized_(false),
+frame_count_(0),
+time_begin_(std::chrono::high_resolution_clock::now())
 {
 	// Initialize ROS2 parameters
 	initializeParameters();
@@ -126,13 +125,13 @@ frame_id_("arducam_tof_frame")
 	tof_camera_.setControl(Arducam::Control::RANGE, range_max_);
 	
 	// Get actual camera range (in case setting failed)
-	tof_camera_.getControl(Arducam::Control::RANGE, &max_range_);
+	tof_camera_.getControl(Arducam::Control::RANGE, &range_max_);
 	
 	// Get camera info
 	Arducam::CameraInfo info = tof_camera_.getCameraInfo();
 	RCLCPP_INFO(this->get_logger(), 
 				"Opened camera with resolution %dx%d and range %d", 
-				info.width, info.height, max_range_);
+				info.width, info.height, range_max_);
 	
 	camera_initialized_ = true;
 	
@@ -232,17 +231,18 @@ void ArducamTofPublisher::cleanup()
 	
 	// Remove parameter callback
 	if (params_callback_handle_) {
-		this->remove_on_set_parameters_callback(static_cast<OnSetParametersCallbackHandle::SharedPtr>(params_callback_handle_));
+		this->remove_on_set_parameters_callback(params_callback_handle_.get());
 		params_callback_handle_.reset();
 	}
 }
 
 // Main function to start the node
-int main(int argc, char * argv[])
+int main(int argc, char ** argv)
 {
 	rclcpp::init(argc, argv);
-	auto node = std::make_shared<ArducamTofPublisher>();
-	rclcpp::spin(node);
+	std::cout << "pouet" << std::endl;
+	// auto node = std::make_shared<ArducamTofPublisher>();
+	// rclcpp::spin(node);
 	rclcpp::shutdown();
 	return 0;
 }

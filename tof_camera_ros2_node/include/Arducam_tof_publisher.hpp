@@ -42,7 +42,6 @@ private:
 	// Arducam TOF Camera
 	Arducam::ArducamTOFCamera tof_camera_;
 	bool camera_initialized_;
-	int max_range_;
 	
 	// FPS calculation
 	int frame_count_;
